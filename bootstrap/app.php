@@ -119,4 +119,7 @@ if ($app->environment() !== 'production') {
 
 $app->withEloquent(); //Para manejar bases de datos
 
+// Agregar cors con comando composer require fruitcake/laravel-cors
+$app->configure('cors');
+
 return $app;
