@@ -15,7 +15,7 @@
 */
 
 
-$router->group(['middleware' => []], function () use ($router){
+$router->group(['middleware'=>[]], function () use ($router){
 	$router->get('/user','UserController@index');
 	$router->get('/user/{id}','UserController@show');
 	$router->post('/user','UserController@create');

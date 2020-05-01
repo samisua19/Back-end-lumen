@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+    php: 
+        build:
+            dockerimage: Dockerfile
+            context: .
+        working_dir: /var/www
+        ports:
+            - 8081:80
+        volumes:
+            - .:/var/www
+            - ./000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+            - ~/.ssh:/root/.ssh
+        links:
+            - db 
+        depends_on:
+            - db
+    db:
+        image: mysql
+        ports:
+            - 33066:3306
+        environment:
+            MYSQL_DATABASE: mydatabase
+            MYSQL_ROOT_PASSWORD: mypassword
+        volumes:
+            - my-datavolume:/var/lib/mysql
+        healthcheck:
+            test: mysql --user=root --password=mypassword -e "select 1"
+            interval: 3s
+            timeout: 10s
+            retries: 10

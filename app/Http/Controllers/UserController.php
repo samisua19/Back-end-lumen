@@ -19,12 +19,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->isJson()){
                 return User::all();
-        }else{
-            // Devuelve un error al no recibir una solicitud en formato Json
-            return response()->json(['Error' => 'Unautorized'], 401,[]);
-        }
         //
     }
 

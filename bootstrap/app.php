@@ -79,6 +79,9 @@ $app->configure('app');
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
 // ]);
+
+$app->configure('cors');
+
 $app->middleware([
     // ...
     Fruitcake\Cors\HandleCors::class,
@@ -98,6 +101,8 @@ $app->middleware([
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+//$app->register(Barryvdh\Cors\ServiceProvider::class);
+//$app->register(Barryvdh\Cors\ServiceProvider::class);
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 
 /*
@@ -122,9 +127,8 @@ if ($app->environment() !== 'production') {
   $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 }
 
-$app->withEloquent(); //Para manejar bases de datos
 
 // Agregar cors con comando composer require fruitcake/laravel-cors
-$app->configure('cors');
+//$app->configure('cors');
 
 return $app;
