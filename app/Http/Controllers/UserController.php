@@ -28,7 +28,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         // Verificar que la solicitud sea json
         if($request->isJson()){
@@ -75,10 +75,6 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -111,11 +107,6 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -137,8 +128,7 @@ class UserController extends Controller
                     'Country' => 'required|max:225',
                     'date_of_birth' => 'required',
                     'gender' => 'required',
-                    'email' => 'required|max:225',
-                    'password' => 'required'
+                    'email' => 'required|max:225'
                 ]);
 
                 $user = User::findOrFail($id);
@@ -153,7 +143,6 @@ class UserController extends Controller
                 $user->date_of_birth = $data['date_of_birth'];
                 $user->gender = $data['gender'];
                 $user->email = $data['email'];
-                $user->password = Hash::make($data['password']);
                 $user->save();
 
                 return response()->json($user,200);

@@ -18,8 +18,8 @@
 $router->group(['middleware'=>[]], function () use ($router){
 	$router->get('/user','UserController@index');
 	$router->get('/user/{id}','UserController@show');
-	$router->post('/user','UserController@create');
-	$router->put('/user/{id}','UserController@update');
+	$router->post('/user','UserController@store');
+	$router->patch('/user/{user}','UserController@update');
 	$router->delete('/user/{id}','UserController@destroy');
 });
 
