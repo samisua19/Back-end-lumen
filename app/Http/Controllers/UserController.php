@@ -58,7 +58,7 @@ class UserController extends Controller
                 'api_token' => Str::random(60)
             ]);
 
-            return response()->json($user,200);
+            return response()->json($this->user,200);
         }else{
             // Devuelve un error al no recibir una solicitud en formato Json
             return response()->json(['Error' => 'Unautorized'], 401,[]);
