@@ -28,7 +28,7 @@ class UserController extends Controller
 
     public function index()
     {
-                return User::all();
+        return User::all();
         //
     }
 
@@ -42,23 +42,28 @@ class UserController extends Controller
         // Verificar que la solicitud sea json
         if($request->isJson()){
 
-            $data = $request;
-            $user = User::create([
-                'identification_card' => $data['identification_card'],
-                'name' => $data['name'],
-                'lastname' => $data['lastname'],
-                'address' => $data['address'],
-                'phone_number' => $data['phone_number'],
-                'city' => $data['city'],
-                'Country' => $data['Country'],
-                'date_of_birth' => $data['date_of_birth'],
-                'gender' => $data['gender'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'api_token' => Str::random(60)
-            ]);
+            try{
+                $data = $request;
+                $this->user = User::create([
+                    'identification_card' => $data['identification_card'],
+                    'name' => $data['name'],
+                    'lastname' => $data['lastname'],
+                    'address' => $data['address'],
+                    'phone_number' => $data['phone_number'],
+                    'city' => $data['city'],
+                    'Country' => $data['Country'],
+                    'date_of_birth' => $data['date_of_birth'],
+                    'gender' => $data['gender'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'api_token' => Str::random(60)
+                ]);
 
-            return response()->json($this->user,200);
+                return response()->json($this->user,200);
+            }catch(ModelNotFoundException $e){
+                return response()->json(['Error' => 'No content'], 406,[]);
+
+            }
         }else{
             // Devuelve un error al no recibir una solicitud en formato Json
             return response()->json(['Error' => 'Unautorized'], 401,[]);
@@ -81,22 +86,22 @@ class UserController extends Controller
      */
     public function show(Request $request, $id)
     {
-         if($request->isJson()){
-            try{
+       if($request->isJson()){
+        try{
 
-                $this->user = User::findOrFail($id);
-                return response()->json($this->user,200);
+            $this->user = User::findOrFail($id);
+            return response()->json($this->user,200);
 
-            }catch(ModelNotFoundException $e){
-                return response()->json(['Error' => 'No content'], 406,[]);
+        }catch(ModelNotFoundException $e){
+            return response()->json(['Error' => 'No content'], 406,[]);
 
-            }
-        }else{
-            // Devuelve un error al no recibir una solicitud en formato Json
-            return response()->json(['Error' => 'Unautorized'], 401,[]);
         }
-        //
+    }else{
+            // Devuelve un error al no recibir una solicitud en formato Json
+        return response()->json(['Error' => 'Unautorized'], 401,[]);
     }
+        //
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -114,10 +119,10 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         if($request->isJson()){
-            try{
-                $data =$request;
-                $this->user = User::findOrFail($id);
 
+            try{
+                $data = $request;
+                $this->user = User::findOrFail($id);
                 $this->user->identification_card = $data['identification_card'];
                 $this->user->name = $data['name'];
                 $this->user->lastname = $data['lastname'];
@@ -151,20 +156,20 @@ class UserController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-         if($request->isJson()){
-            try{
-                $this->user = User::findOrFail($id);
-                $this->user->delete();
-                return response()->json(['user' => $this->user, 'users' => User::all()],200);
+       if($request->isJson()){
+        try{
+            $this->user = User::findOrFail($id);
+            $this->user->delete();
+            return response()->json(['user' => $this->user, 'users' => User::all()],200);
 
-            }catch(ModelNotFoundException $e){
-                return response()->json(['Error' => 'No content'], 406,[]);
+        }catch(ModelNotFoundException $e){
+            return response()->json(['Error' => 'No content'], 406,[]);
 
-            }
-        }else{
-            // Devuelve un error al no recibir una solicitud en formato Json
-            return response()->json(['Error' => 'Unautorized'], 401,[]);
         }
-        //
+    }else{
+            // Devuelve un error al no recibir una solicitud en formato Json
+        return response()->json(['Error' => 'Unautorized'], 401,[]);
     }
+        //
+}
 }
