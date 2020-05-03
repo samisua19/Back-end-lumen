@@ -12,12 +12,21 @@ use App\User;
 use Illuminate\Support\Str;
 class UserController extends Controller
 {
+
+    protected $user;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+
+    function __construct(User $user)
+    {
+        $this->user = $user;
+        # code...
+    }
+
+    public function index()
     {
                 return User::all();
         //
@@ -32,20 +41,8 @@ class UserController extends Controller
     {
         // Verificar que la solicitud sea json
         if($request->isJson()){
-            $data = $this->validate($request,[
-                'identification_card' => 'required|max:10',
-                'name' => 'required|max:225',
-                'lastname' => 'required|max:225',
-                'address' => 'required|max:225',
-                'phone_number' => 'required|max:10',
-                'city' => 'required|max:225',
-                'Country' => 'required|max:225',
-                'date_of_birth' => 'required',
-                'gender' => 'required',
-                'email' => 'required|max:225',
-                'password' => 'required'
-            ]);
 
+            $data = $request;
             $user = User::create([
                 'identification_card' => $data['identification_card'],
                 'name' => $data['name'],
@@ -87,8 +84,8 @@ class UserController extends Controller
          if($request->isJson()){
             try{
 
-                $user = User::findOrFail($id);
-                return response()->json($user,200);
+                $this->user = User::findOrFail($id);
+                return response()->json($this->user,200);
 
             }catch(ModelNotFoundException $e){
                 return response()->json(['Error' => 'No content'], 406,[]);
@@ -118,34 +115,22 @@ class UserController extends Controller
     {
         if($request->isJson()){
             try{
-                $data = $this->validate($request,[
-                    'identification_card' => 'required|max:10',
-                    'name' => 'required|max:225',
-                    'lastname' => 'required|max:225',
-                    'address' => 'required|max:225',
-                    'phone_number' => 'required|max:10',
-                    'city' => 'required|max:225',
-                    'Country' => 'required|max:225',
-                    'date_of_birth' => 'required',
-                    'gender' => 'required',
-                    'email' => 'required|max:225'
-                ]);
+                $data =$request;
+                $this->user = User::findOrFail($id);
 
-                $user = User::findOrFail($id);
+                $this->user->identification_card = $data['identification_card'];
+                $this->user->name = $data['name'];
+                $this->user->lastname = $data['lastname'];
+                $this->user->address = $data['address'];
+                $this->user->phone_number = $data['phone_number'];
+                $this->user->city = $data['city'];
+                $this->user->Country = $data['Country'];
+                $this->user->date_of_birth = $data['date_of_birth'];
+                $this->user->gender = $data['gender'];
+                $this->user->email = $data['email'];
+                $this->user->save();
 
-                $user->identification_card = $data['identification_card'];
-                $user->name = $data['name'];
-                $user->lastname = $data['lastname'];
-                $user->address = $data['address'];
-                $user->phone_number = $data['phone_number'];
-                $user->city = $data['city'];
-                $user->Country = $data['Country'];
-                $user->date_of_birth = $data['date_of_birth'];
-                $user->gender = $data['gender'];
-                $user->email = $data['email'];
-                $user->save();
-
-                return response()->json($user,200);
+                return response()->json($this->user,200);
 
             }catch(ModelNotFoundException $e){
                 return response()->json(['Error' => 'No content'], 406,[]);
@@ -168,11 +153,9 @@ class UserController extends Controller
     {
          if($request->isJson()){
             try{
-
-                $user = User::findOrFail($id);
-                $user->delete();
-
-                return response()->json($user,200);
+                $this->user = User::findOrFail($id);
+                $this->user->delete();
+                return response()->json(['user' => $this->user, 'users' => User::all()],200);
 
             }catch(ModelNotFoundException $e){
                 return response()->json(['Error' => 'No content'], 406,[]);
