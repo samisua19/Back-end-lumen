@@ -26,9 +26,21 @@ class UserController extends Controller
         # code...
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+        if($request->isJson()){
+
+            try{
+                $data = User::latest()->paginate('8');
+                return $data;
+            }catch(ModelNotFoundException $e){
+                return response()->json(['Error' => 'No content'], 406,[]);
+
+            }
+        }else{
+            // Devuelve un error al no recibir una solicitud en formato Json
+            return response()->json(['Error' => 'Unautorized'], 401,[]);
+        }
         //
     }
 
@@ -55,6 +67,7 @@ class UserController extends Controller
                     'date_of_birth' => $data['date_of_birth'],
                     'gender' => $data['gender'],
                     'email' => $data['email'],
+                    'profile_picture' => $data['profile_picture'],
                     'password' => Hash::make($data['password']),
                     'api_token' => Str::random(60)
                 ]);
@@ -86,7 +99,7 @@ class UserController extends Controller
      */
     public function show(Request $request, $id)
     {
-       if($request->isJson()){
+     if($request->isJson()){
         try{
 
             $this->user = User::findOrFail($id);
@@ -133,6 +146,7 @@ class UserController extends Controller
                 $this->user->date_of_birth = $data['date_of_birth'];
                 $this->user->gender = $data['gender'];
                 $this->user->email = $data['email'];
+                $this->user->profile_picture = $data['profile_picture'];
                 $this->user->save();
 
                 return response()->json($this->user,200);
@@ -156,7 +170,7 @@ class UserController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-       if($request->isJson()){
+     if($request->isJson()){
         try{
             $this->user = User::findOrFail($id);
             $this->user->delete();
